@@ -1,14 +1,8 @@
 # ---- Dependencies ----
-FROM node:16-alpine AS dependencies
+FROM node:16-alpine AS build
 WORKDIR /app
-COPY package.json ./
-RUN yarn install
-
-# ---- Build ----
-FROM dependencies AS build
-WORKDIR /app
-COPY . /app
-RUN yarn build
+COPY . .
+RUN yarn install && yarn build
 
 FROM nginx:1.16-alpine
 COPY --from=build /app/dist /usr/share/nginx/html
